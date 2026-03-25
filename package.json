@@ -2,9 +2,11 @@
   "name": "projeto-cinema-poo-senac",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "Main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node Main.ts",
+    "build": "tsc --noEmit",
+    "test": "echo \"Sem testes automatizados configurados\""
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,11 @@
     "url": "https://github.com/joaowatanabe/projeto-cinema-poo-senac/issues"
   },
   "homepage": "https://github.com/joaowatanabe/projeto-cinema-poo-senac#readme",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  },
   "devDependencies": {
+    "@types/node": "^24.5.2",
     "@types/prompt-sync": "^4.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
