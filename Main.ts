@@ -45,9 +45,17 @@ while (true) {
             novoCliente.nome = pergunta("Qual o nome do Cliente: ");
             novoCliente.idade = +pergunta("Qual a idade do Cliente: ");
 
-            novoCliente.adicionarCliente(novoCliente);
+            meuCinema.adicionarCliente(novoCliente);
             break;
-
+            
+        case 4:
+            meuCinema.listarCliente();
+            break;
+            
+        case 8:
+            const idCliExcluir = +pergunta("Digite o ID do cliente que deseja excluir: ");
+            meuCinema.excluirCliente(idCliExcluir);
+            break;
         
         case 7:
             const idExcluir = +pergunta("Digite o ID do filme que deseja excluir: ");
