@@ -1,3 +1,5 @@
+import { SessaoFilme } from "./SessaoFilme";
+
 export class Filme {
   id: number;
   titulo: string;
@@ -5,6 +7,7 @@ export class Filme {
   duracaoMinutos: number;
   sinopse: string;
   ativo: boolean;
+  sessoes: SessaoFilme[];
 
   constructor(id: number, titulo: string) {
     this.id = id; 
@@ -13,5 +16,6 @@ export class Filme {
     this.duracaoMinutos = 0;
     this.sinopse = "";
     this.ativo = true;
+    this.sessoes = [];
   }
 }
