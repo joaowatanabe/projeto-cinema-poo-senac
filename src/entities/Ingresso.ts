@@ -7,6 +7,7 @@ export class Ingresso {
     cliente: ClienteCinema,
     sessao: SessaoFilme,
     assento: number,
+    meiaEntrada: ClienteCinema['estudante'],
     valorPago: number,
   ) {}
 }
