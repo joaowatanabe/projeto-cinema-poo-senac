@@ -8,11 +8,12 @@ export class Clientes {
     return `\nCliente "${cliente.nome}" adicionado com sucesso ao Sistema\n`;
   }
 
-  public listarCliente(): string {
+  public listarClientes(): string {
     if (this.clientes.length === 0) {
-      return `\nNenhum Cliente cadastrado no Sistema!`;
+      return `\nNenhum Cliente cadastrado no Sistema!\n`;
     }
-    let resultado = "\n--- Catálogo de Clientes---";
+
+    let resultado = "\n--- Catálogo de Clientes ---\n";
     this.clientes.forEach((c) => {
       resultado += `[${c.id}] ${c.nome} | CPF: ${c.cpf} | Idade: ${c.idade} | Estudante: ${c.estudante ? "Sim" : "Não"}\n`;
     });
@@ -24,10 +25,9 @@ export class Clientes {
 
     if (index !== -1) {
       const removido = this.clientes.splice(index, 1);
-      return `\nCliente "${removido[0].nome} excluído do Sistema!"`;
-    } else {
-      return `\nErro: Nenhum Cliente encontrado com este ID no Sistema.\n`;
+      return `\nCliente "${removido[0].nome}" excluído do Sistema!\n`;
     }
+    return `\nErro: Nenhum Cliente encontrado com este ID no Sistema.\n`;
   }
 
   public buscarPorId(id: number): ClienteCinema | undefined {
