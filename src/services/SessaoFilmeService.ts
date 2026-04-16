@@ -1,45 +1,37 @@
 import { SessaoFilme } from "../entities/SessaoFilme";
-import { Filme } from "../entities/Filme";
 
 export class SessaoFilmeService {
   private sessoes: SessaoFilme[] = [];
 
-  public adicionarSessao(sessao: SessaoFilme): void {
+  public adicionarSessao(sessao: SessaoFilme): string {
     this.sessoes.push(sessao);
-    console.log(
-      `\nSessão do filme "${sessao.filme.titulo}" adicionada com sucesso!\n`,
-    );
+    return `\nSessão do filme "${sessao.filme.titulo}" adicionada com sucesso!\n`;
   }
 
-  public listarSessoes(): void {
+  public listarSessoes(): string {
     if (this.sessoes.length === 0) {
-      console.log("\nNenhuma sessão cadastrada no momento.\n");
-      return;
+      return `\nNenhuma sessão cadastrada no momento.\n`;
     }
-    console.log("\n--- Sessões Disponíveis ---");
+
+    let resultado = "\n--- Sessões Disponíveis ---\n";
     this.sessoes.forEach((s) => {
       const livres = s.totalAssentos - s.assentosOcupados.length;
-      console.log(
-        `[${s.id}] ${s.filme.titulo} | ${s.horario} | Sala: ${s.sala} | Assentos livres: ${livres}/${s.totalAssentos}`,
-      );
+      resultado += `[${s.id}] ${s.filme.titulo} | ${s.horario} | Sala: ${s.sala} | Livres: ${livres}/${s.totalAssentos}\n`;
     });
-    console.log("");
+    return resultado;
   }
 
   public buscarPorId(id: number): SessaoFilme | undefined {
     return this.sessoes.find((s) => s.id === id);
   }
 
-  public excluirSessao(id: number): void {
+  public excluirSessao(id: number): string {
     const index = this.sessoes.findIndex((s) => s.id === id);
 
     if (index !== -1) {
       const removida = this.sessoes.splice(index, 1);
-      console.log(
-        `\nSessão "${removida[0].filme.titulo} - ${removida[0].horario}" removida!\n`,
-      );
-    } else {
-      console.log("\nErro: Nenhuma sessão encontrada com este ID.\n");
+      return `\nSessão "${removida[0].filme.titulo} - ${removida[0].horario}" removida!\n`;
     }
+    return `\nErro: Nenhuma sessão encontrada com este ID.\n`;
   }
 }
