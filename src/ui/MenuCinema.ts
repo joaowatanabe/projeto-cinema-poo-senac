@@ -7,6 +7,7 @@ import { Clientes } from "../services/CadastrarCliente";
 import { CadastrarFilmeService } from "../services/CadastrarFilmeService";
 import { SessaoFilmeService } from "../services/SessaoFilmeService";
 import { CadastrarIngresso } from "../services/CadastrarIngresso";
+import { SalaCinema } from "./SalaCinema";
 
 export class MenuCinema {
   private pergunta = prompt();
@@ -163,9 +164,49 @@ export class MenuCinema {
       return;
     }
 
-    const assento = +this.pergunta("Número do assento desejado: ");
-    const id = +this.pergunta("ID do Ingresso: ");
+    // Exibe a sala e pede o assento em loop até escolha válida
+    let assento = -1;
+    while (true) {
+      SalaCinema.renderizar(sessao.totalAssentos, sessao.assentosOcupados);
 
+      const input = this.pergunta(
+        "Digite o assento (ex: A1, B3) ou 0 para cancelar: ",
+      );
+
+      if (input === "0") {
+        console.log("\nCompra cancelada.\n");
+        return;
+      }
+
+      const numero = SalaCinema.labelParaNumero(input);
+
+      if (numero === -1) {
+        console.log("\nFormato inválido. Use letra + número, ex: A1\n");
+        continue;
+      }
+
+      if (!sessao.assentoDisponivel(numero)) {
+        console.log("\nEste assento está ocupado. Escolha outro.\n");
+        continue;
+      }
+
+      // Mostra preview com o assento selecionado destacado
+      SalaCinema.renderizar(
+        sessao.totalAssentos,
+        sessao.assentosOcupados,
+        numero,
+      );
+      const confirmar = this.pergunta(
+        `Confirmar assento ${input.toUpperCase()}? (S/N): `,
+      );
+
+      if (confirmar.toLowerCase() === "s") {
+        assento = numero;
+        break;
+      }
+    }
+
+    const id = +this.pergunta("ID do Ingresso: ");
     const resultado = this.ingressoService.emitirIngresso(
       id,
       cliente,
@@ -182,7 +223,9 @@ export class MenuCinema {
       console.log(
         `   Sessão  : ${resultado.sessao.horario} | Sala: ${resultado.sessao.sala}`,
       );
-      console.log(`   Assento : ${resultado.assento}`);
+      console.log(
+        `   Assento : ${SalaCinema.numeroParaLabel(resultado.assento)} (nº ${resultado.assento})`,
+      );
       console.log(
         `   Tipo    : ${resultado.meiaEntrada ? "Meia Entrada" : "Inteira"}`,
       );
