@@ -1,33 +1,36 @@
 import { Filme } from "../entities/Filme";
-import { SessaoFilme } from "../entities/SessaoFilme";
 
 export class CadastrarFilmeService {
   private filmes: Filme[] = [];
 
-  public adicionarFilme(filme: Filme): void {
+  public adicionarFilme(filme: Filme): string {
     this.filmes.push(filme);
-    console.log(`\nFilme "${filme.titulo}" adicionado ao catálogo!\n`);
+    return `\nFilme "${filme.titulo}" adicionado ao catálogo!\n`;
   }
 
-  public listarFilmes(): void {
+  public listarFilmes(): string {
     if (this.filmes.length === 0) {
-      console.log("\nNenhum filme cadastrado no momento.\n");
-      return;
+      return `\nNenhum filme cadastrado no momento.\n`;
     }
-    console.log("\n--- Catálogo de Filmes ---");
-    console.table(this.filmes);
+
+    let resultado = "\n--- Catálogo de Filmes ---\n";
+    this.filmes.forEach((f) => {
+      resultado += `[${f.id}] ${f.titulo} | Classificação: ${f.classificacao}+ | Duração: ${f.duracaoMinutos}min | Ativo: ${f.ativo ? "Sim" : "Não"}\n`;
+    });
+    return resultado;
   }
 
-  public excluirFilme(id: number): void {
+  public excluirFilme(id: number): string {
     const index = this.filmes.findIndex((f) => f.id === id);
 
     if (index !== -1) {
       const removido = this.filmes.splice(index, 1);
-      console.log(
-        `\nFilme "${removido[0].titulo}" excluído com sucesso do cinema!\n`,
-      );
-    } else {
-      console.log("\nErro: Nenhum filme encontrado com este ID no sistema.\n");
+      return `\nFilme "${removido[0].titulo}" excluído com sucesso do cinema!\n`;
     }
+    return `\nErro: Nenhum filme encontrado com este ID no sistema.\n`;
+  }
+
+  public buscarPorId(id: number): Filme | undefined {
+    return this.filmes.find((f) => f.id === id);
   }
 }
