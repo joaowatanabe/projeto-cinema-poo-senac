@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/node": "^24.5.2",
     "@types/prompt-sync": "^4.2.3",
+    "jest": "^30.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   }

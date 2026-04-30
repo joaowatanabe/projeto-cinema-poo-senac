@@ -163,8 +163,6 @@ export class MenuCinema {
       console.log("\nErro: Sessão não encontrada.\n");
       return;
     }
-
-    // Exibe a sala e pede o assento em loop até escolha válida
     let assento = -1;
     while (true) {
       SalaCinema.renderizar(sessao.totalAssentos, sessao.assentosOcupados);
@@ -189,8 +187,6 @@ export class MenuCinema {
         console.log("\nEste assento está ocupado. Escolha outro.\n");
         continue;
       }
-
-      // Mostra preview com o assento selecionado destacado
       SalaCinema.renderizar(
         sessao.totalAssentos,
         sessao.assentosOcupados,

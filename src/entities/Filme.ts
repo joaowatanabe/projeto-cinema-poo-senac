@@ -1,21 +1,78 @@
 import { SessaoFilme } from "./SessaoFilme";
 
 export class Filme {
-  id: number;
-  titulo: string;
-  classificacao: number;
-  duracaoMinutos: number;
-  sinopse: string;
-  ativo: boolean;
-  sessoes: SessaoFilme[];
+  private _id: number;
+  private _titulo: string;
+  private _classificacao: number;
+  private _duracaoMinutos: number;
+  private _sinopse: string;
+  private _ativo: boolean;
+  private _sessoes: SessaoFilme[];
 
   constructor(id: number, titulo: string) {
-    this.id = id; 
-    this.titulo = titulo; 
-    this.classificacao = 0;
-    this.duracaoMinutos = 0;
-    this.sinopse = "";
-    this.ativo = true;
-    this.sessoes = [];
+    this._id = id; 
+    this._titulo = titulo; 
+    this._classificacao = 0;
+    this._duracaoMinutos = 0;
+    this._sinopse = "";
+    this._ativo = true;
+    this._sessoes = [];
+  }
+
+  public get id(): number {
+    return this._id;
+  }
+
+  public set id(id: number) {
+    this._id = id;
+  }
+
+  public get titulo(): string {
+    return this._titulo;
+  }
+
+  public set titulo(titulo: string) {
+    this._titulo = titulo;
+  }
+
+  public get classificacao(): number {
+    return this._classificacao;
+  }
+
+  public set classificacao(classificacao: number) {
+    this._classificacao = classificacao;
+  }
+
+  public get sinopse(): string {
+    return this._sinopse;
+  }
+
+  public set sinopse(sinopse: string) {
+    this._sinopse = sinopse;
+  }
+
+  public get duracaoMinutos(): number {
+    return this._duracaoMinutos;
+  }
+
+  public set duracaoMinutos(duracaoMinutos: number) {
+    this._duracaoMinutos = duracaoMinutos;
+  }
+
+  public set ativo(ativo: boolean) {
+    this._ativo = ativo;
+  }
+
+  public get ativo(): boolean {
+    return this._ativo;
+  }
+
+  public get sessoes(): SessaoFilme[] {
+    return this._sessoes;
+  }
+
+  public set sessoes(sessoes: SessaoFilme[]) {
+    this._sessoes = sessoes;
   }
 }
+
