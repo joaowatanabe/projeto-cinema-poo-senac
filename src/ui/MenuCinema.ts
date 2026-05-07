@@ -13,7 +13,7 @@ import { FilmeAdulto } from "../entities/FilmeAdulto";
 export class MenuCinema {
   private pergunta = prompt();
   private clienteService = new Clientes();
-  private filmeService = new CadastrarFilmeService(new FilmeAdulto(0, "Filme Adulto Exemplo", false));
+  private filmeService = new CadastrarFilmeService();
   private sessaoService = new SessaoFilmeService();
   private ingressoService = new CadastrarIngresso();
 
@@ -86,15 +86,28 @@ export class MenuCinema {
   private criarFilme(): void {
     const id = +this.pergunta("ID do Filme: ");
     const titulo = this.pergunta("Título do Filme: ");
+    const classificacao = +this.pergunta(
+      "Classificação etária (0, 10, 12, 14, 16, 18): ",
+    );
+    const duracaoMinutos = +this.pergunta("Duração em minutos: ");
+    const sinopse = this.pergunta("Sinopse: ");
+    const ativo = this.pergunta("Ativo? (S/N): ").toLowerCase() === "s";
 
-    const novoFilme = new Filme(id, titulo);
-    novoFilme.classificacao = +this.pergunta("Classificação etária: ");
-    if (novoFilme.classificacao >= 18) {
-      (novoFilme as FilmeAdulto).conteudoAdulto = true;
+    let novoFilme: Filme;
+    if (classificacao >= 18) {
+      novoFilme = new FilmeAdulto(id, titulo);
+      console.log(
+        "\n⚠ Filme classificado como +18. Menores serão impedidos na compra.\n",
+      );
+    } else {
+      novoFilme = new Filme(id, titulo);
+      novoFilme.classificacao = classificacao;
     }
-    novoFilme.duracaoMinutos = +this.pergunta("Duração em minutos: ");
-    novoFilme.sinopse = this.pergunta("Sinopse: ");
-    novoFilme.ativo = this.pergunta("Ativo? (S/N): ").toLowerCase() === "s";
+
+    novoFilme.duracaoMinutos = duracaoMinutos;
+    novoFilme.sinopse = sinopse;
+    novoFilme.ativo = ativo;
+
     console.log(this.filmeService.adicionarFilme(novoFilme));
   }
 

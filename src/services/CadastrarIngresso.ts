@@ -1,6 +1,7 @@
 import { Ingresso } from "../entities/Ingresso";
 import { ClienteCinema } from "../entities/ClienteCinema";
 import { SessaoFilme } from "../entities/SessaoFilme";
+import { FilmeAdulto } from "../entities/FilmeAdulto";
 
 const PRECO_CHEIO = 25.0;
 const PRECO_MEIA = PRECO_CHEIO / 2;
@@ -14,8 +15,13 @@ export class CadastrarIngresso {
     sessao: SessaoFilme,
     assento: number,
   ): Ingresso | string {
+    // Validação de classificação etária (cobre +18 automaticamente)
     if (cliente.idade < sessao.filme.classificacao) {
-      return `\nErro: Cliente não tem idade mínima para este filme (${sessao.filme.classificacao} anos).\n`;
+      const isAdulto = sessao.filme instanceof FilmeAdulto;
+      const motivo = isAdulto
+        ? `Este filme é classificado como +18 e não é permitido para menores.`
+        : `Classificação mínima: ${sessao.filme.classificacao} anos.`;
+      return `\nErro: ${motivo} Cliente tem ${cliente.idade} anos.\n`;
     }
 
     if (!sessao.assentoDisponivel(assento)) {
@@ -36,7 +42,6 @@ export class CadastrarIngresso {
       valorPago,
     );
     this.ingressos.push(ingresso);
-
     return ingresso;
   }
 
