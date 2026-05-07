@@ -9,6 +9,7 @@ import { SessaoFilmeService } from "../services/SessaoFilmeService";
 import { CadastrarIngresso } from "../services/CadastrarIngresso";
 import { SalaCinema } from "./SalaCinema";
 import { FilmeAdulto } from "../entities/FilmeAdulto";
+import { ClienteVip } from "../entities/ClienteVip";
 
 export class MenuCinema {
   private pergunta = prompt();
@@ -145,14 +146,32 @@ export class MenuCinema {
   private criarCliente(): void {
     const id = +this.pergunta("ID do Cliente: ");
     const cpf = this.pergunta("CPF do Cliente: ");
+    const nome = this.pergunta("Nome do Cliente: ");
+    const idade = +this.pergunta("Idade do Cliente: ");
+    const isVip = this.pergunta("É cliente VIP? (S/N): ").toLowerCase() === "s";
 
-    const novoCliente = new ClienteCinema(id, cpf);
-    novoCliente.nome = this.pergunta("Nome do Cliente: ");
-    novoCliente.idade = +this.pergunta("Idade do Cliente: ");
-    novoCliente.estudante =
-      this.pergunta("É estudante? (S/N): ").toLowerCase() === "s";
+    if (isVip) {
+      const mensalidade =
+        this.pergunta("Possui plano Mensal ativo? (S/N): ").toLowerCase() ===
+        "s";
+      const anual =
+        this.pergunta("Possui plano Anual ativo? (S/N): ").toLowerCase() ===
+        "s";
 
-    console.log(this.clienteService.adicionarCliente(novoCliente));
+      const novoVip = new ClienteVip(id, cpf, mensalidade, anual);
+      novoVip.nome = nome;
+      novoVip.idade = idade;
+
+      console.log(this.clienteService.adicionarCliente(novoVip));
+    } else {
+      const novoCliente = new ClienteCinema(id, cpf);
+      novoCliente.nome = nome;
+      novoCliente.idade = idade;
+      novoCliente.estudante =
+        this.pergunta("É estudante? (S/N): ").toLowerCase() === "s";
+
+      console.log(this.clienteService.adicionarCliente(novoCliente));
+    }
   }
 
   private deletarCliente(): void {

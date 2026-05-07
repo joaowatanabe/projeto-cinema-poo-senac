@@ -6,7 +6,8 @@ export class Clientes {
 
   public adicionarCliente(cliente: ClienteCinema | ClienteVip): string {
     this.clientes.push(cliente);
-    return `\nCliente "${cliente.nome}" adicionado com sucesso ao Sistema\n`;
+    const tag = cliente instanceof ClienteVip ? " [VIP]" : "";
+    return `\nCliente "${cliente.nome}"${tag} adicionado com sucesso ao Sistema\n`;
   }
 
   public listarClientes(): string {
@@ -16,14 +17,18 @@ export class Clientes {
 
     let resultado = "\n--- Catálogo de Clientes ---\n";
     this.clientes.forEach((c) => {
-      resultado += `[${c.id}] ${c.nome} | CPF: ${c.cpf} | Idade: ${c.idade} | Estudante: ${c.estudante ? "Sim" : "Não"}\n`;
+      if (c instanceof ClienteVip) {
+        const plano = c.anual ? "Anual" : c.mensalidade ? "Mensal" : "Inativo";
+        resultado += `[${c.id}] ${c.nome} | CPF: ${c.cpf} | Idade: ${c.idade} | VIP 👑 Plano: ${plano}\n`;
+      } else {
+        resultado += `[${c.id}] ${c.nome} | CPF: ${c.cpf} | Idade: ${c.idade} | Estudante: ${c.estudante ? "Sim" : "Não"}\n`;
+      }
     });
     return resultado;
   }
 
   public excluirCliente(id: number): string {
     const index = this.clientes.findIndex((c) => c.id === id);
-
     if (index !== -1) {
       const removido = this.clientes.splice(index, 1);
       return `\nCliente "${removido[0].nome}" excluído do Sistema!\n`;
@@ -34,6 +39,4 @@ export class Clientes {
   public buscarPorId(id: number): ClienteCinema | undefined {
     return this.clientes.find((c) => c.id === id);
   }
-
-
 }
