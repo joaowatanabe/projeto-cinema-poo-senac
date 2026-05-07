@@ -1,17 +1,17 @@
 export class ClienteCinema {
-  private _id: number;
-  private _nome: string;
-  private _cpf: string;
-  private _idade: number;
-  private _ativo: boolean;
-  private _estudante: boolean;
+  protected _id: number;
+  protected _nome: string;
+  protected _cpf: string;
+  protected _idade: number;
+  protected _ativoVip: boolean;
+  protected _estudante: boolean;
 
   constructor(id: number, cpf: string) {
     this._id = id;
     this._nome = "";
     this._cpf = cpf;
     this._idade = 0;
-    this._ativo = true;
+    this._ativoVip = false;
     this._estudante = false;
   }
 
@@ -43,12 +43,12 @@ export class ClienteCinema {
     this._idade = idade;
   }
 
-  public get ativo(): boolean {
-    return this._ativo;
+  public get ativoVip(): boolean {
+    return this._ativoVip;
   }
 
-  public set ativo(ativo: boolean) {
-    this._ativo = ativo;
+  public set ativoVip(ativoVip: boolean) {
+    this._ativoVip = ativoVip;
   }
 
   public get estudante(): boolean {

@@ -1,7 +1,13 @@
 import { Filme } from "../entities/Filme";
+import { FilmeAdulto } from "../entities/FilmeAdulto";
 
 export class CadastrarFilmeService {
   private filmes: Filme[] = [];
+  private filmeAdulto: FilmeAdulto;
+
+  constructor(filmeAdulto: FilmeAdulto) {
+    this.filmeAdulto = filmeAdulto;
+  }
 
   public adicionarFilme(filme: Filme): string {
     this.filmes.push(filme);
@@ -32,5 +38,13 @@ export class CadastrarFilmeService {
 
   public buscarPorId(id: number): Filme | undefined {
     return this.filmes.find((f) => f.id === id);
+  }
+
+  public classificacao(classificacao: number) {
+    if (classificacao < 18) {
+      throw new Error("Classificação para filme adulto deve ser 18 ou mais.");
+    }   else {
+      this.filmeAdulto.classificacao = classificacao;
+    }
   }
 }

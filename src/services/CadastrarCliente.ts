@@ -1,9 +1,10 @@
 import { ClienteCinema } from "../entities/ClienteCinema";
+import { ClienteVip } from "../entities/ClienteVip";
 
 export class Clientes {
-  private clientes: ClienteCinema[] = [];
+  private clientes: (ClienteCinema | ClienteVip)[] = [];
 
-  public adicionarCliente(cliente: ClienteCinema): string {
+  public adicionarCliente(cliente: ClienteCinema | ClienteVip): string {
     this.clientes.push(cliente);
     return `\nCliente "${cliente.nome}" adicionado com sucesso ao Sistema\n`;
   }
@@ -33,4 +34,6 @@ export class Clientes {
   public buscarPorId(id: number): ClienteCinema | undefined {
     return this.clientes.find((c) => c.id === id);
   }
+
+
 }

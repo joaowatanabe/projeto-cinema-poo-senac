@@ -8,11 +8,12 @@ import { CadastrarFilmeService } from "../services/CadastrarFilmeService";
 import { SessaoFilmeService } from "../services/SessaoFilmeService";
 import { CadastrarIngresso } from "../services/CadastrarIngresso";
 import { SalaCinema } from "./SalaCinema";
+import { FilmeAdulto } from "../entities/FilmeAdulto";
 
 export class MenuCinema {
   private pergunta = prompt();
   private clienteService = new Clientes();
-  private filmeService = new CadastrarFilmeService();
+  private filmeService = new CadastrarFilmeService(new FilmeAdulto(0, "Filme Adulto Exemplo", false));
   private sessaoService = new SessaoFilmeService();
   private ingressoService = new CadastrarIngresso();
 
@@ -88,10 +89,12 @@ export class MenuCinema {
 
     const novoFilme = new Filme(id, titulo);
     novoFilme.classificacao = +this.pergunta("Classificação etária: ");
+    if (novoFilme.classificacao >= 18) {
+      (novoFilme as FilmeAdulto).conteudoAdulto = true;
+    }
     novoFilme.duracaoMinutos = +this.pergunta("Duração em minutos: ");
     novoFilme.sinopse = this.pergunta("Sinopse: ");
     novoFilme.ativo = this.pergunta("Ativo? (S/N): ").toLowerCase() === "s";
-
     console.log(this.filmeService.adicionarFilme(novoFilme));
   }
 

@@ -1,17 +1,17 @@
 import { SessaoFilme } from "./SessaoFilme";
 
 export class Filme {
-  private _id: number;
-  private _titulo: string;
-  private _classificacao: number;
-  private _duracaoMinutos: number;
-  private _sinopse: string;
-  private _ativo: boolean;
-  private _sessoes: SessaoFilme[];
+  protected _id: number;
+  protected _titulo: string;
+  protected _classificacao: number;
+  protected _duracaoMinutos: number;
+  protected _sinopse: string;
+  protected _ativo: boolean;
+  protected _sessoes: SessaoFilme[];
 
   constructor(id: number, titulo: string) {
     this._id = id; 
-    this._titulo = titulo; 
+    this._titulo = titulo;
     this._classificacao = 0;
     this._duracaoMinutos = 0;
     this._sinopse = "";
