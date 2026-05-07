@@ -229,6 +229,13 @@ export class MenuCinema {
     if (typeof resultado === "string") {
       console.log(resultado);
     } else {
+      const tipo =
+        resultado.valorPago === 0
+          ? "Cortesia VIP 🎟"
+          : resultado.meiaEntrada
+            ? "Meia Entrada"
+            : "Inteira";
+
       console.log(`\n✔ Ingresso emitido com sucesso!`);
       console.log(`   Cliente : ${resultado.cliente.nome}`);
       console.log(`   Filme   : ${resultado.sessao.filme.titulo}`);
@@ -238,9 +245,7 @@ export class MenuCinema {
       console.log(
         `   Assento : ${SalaCinema.numeroParaLabel(resultado.assento)} (nº ${resultado.assento})`,
       );
-      console.log(
-        `   Tipo    : ${resultado.meiaEntrada ? "Meia Entrada" : "Inteira"}`,
-      );
+      console.log(`   Tipo    : ${tipo}`);
       console.log(`   Valor   : R$ ${resultado.valorPago.toFixed(2)}\n`);
     }
   }

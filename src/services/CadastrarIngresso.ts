@@ -1,5 +1,6 @@
 import { Ingresso } from "../entities/Ingresso";
 import { ClienteCinema } from "../entities/ClienteCinema";
+import { ClienteVip } from "../entities/ClienteVip";
 import { SessaoFilme } from "../entities/SessaoFilme";
 import { FilmeAdulto } from "../entities/FilmeAdulto";
 
@@ -15,7 +16,6 @@ export class CadastrarIngresso {
     sessao: SessaoFilme,
     assento: number,
   ): Ingresso | string {
-    // Validação de classificação etária (cobre +18 automaticamente)
     if (cliente.idade < sessao.filme.classificacao) {
       const isAdulto = sessao.filme instanceof FilmeAdulto;
       const motivo = isAdulto
@@ -28,8 +28,15 @@ export class CadastrarIngresso {
       return `\nErro: Assento ${assento} não está disponível.\n`;
     }
 
-    const meiaEntrada = cliente.estudante;
-    const valorPago = meiaEntrada ? PRECO_MEIA : PRECO_CHEIO;
+    let meiaEntrada = false;
+    let valorPago = PRECO_CHEIO;
+
+    if (cliente instanceof ClienteVip && cliente.planoAtivo) {
+      valorPago = 0; // Cortesia VIP — plano já foi pago
+    } else if (cliente.estudante) {
+      meiaEntrada = true;
+      valorPago = PRECO_MEIA;
+    }
 
     sessao.ocuparAssento(assento);
 
@@ -52,7 +59,13 @@ export class CadastrarIngresso {
 
     let resultado = "\n--- Ingressos Emitidos ---\n";
     this.ingressos.forEach((i) => {
-      resultado += `[${i.id}] ${i.cliente.nome} | ${i.sessao.filme.titulo} | Assento: ${i.assento} | ${i.meiaEntrada ? "Meia" : "Inteira"} | R$ ${i.valorPago.toFixed(2)}\n`;
+      const tipo =
+        i.valorPago === 0
+          ? "Cortesia VIP"
+          : i.meiaEntrada
+            ? "Meia Entrada"
+            : "Inteira";
+      resultado += `[${i.id}] ${i.cliente.nome} | ${i.sessao.filme.titulo} | Assento: ${i.assento} | ${tipo} | R$ ${i.valorPago.toFixed(2)}\n`;
     });
     return resultado;
   }
