@@ -15,10 +15,18 @@ import { FilmeComum } from "../entities/FilmeComum";
 
 export class MenuCinema {
   private pergunta = prompt();
-  private clienteService = new Clientes();
-  private filmeService = new CadastrarFilmeService();
+  private clienteService: Clientes;
+  private filmeService: CadastrarFilmeService;
   private sessaoService = new SessaoFilmeService();
   private ingressoService = new CadastrarIngresso();
+
+  constructor(
+    clientesIniciais: ClienteCinema[] = [],
+    filmesIniciais: Filme[] = [],
+  ) {
+    this.clienteService = new Clientes(clientesIniciais);
+    this.filmeService = new CadastrarFilmeService(filmesIniciais);
+  }
 
   public iniciar(): void {
     while (true) {
@@ -26,18 +34,21 @@ export class MenuCinema {
       console.log("---- Filmes ----");
       console.log("1. Cadastrar Filme");
       console.log("2. Listar Filmes");
-      console.log("3. Excluir Filme");
+      console.log("3. Editar Filme");
+      console.log("4. Excluir Filme");
       console.log("---- Sessões ----");
-      console.log("4. Cadastrar Sessão");
-      console.log("5. Listar Sessões");
-      console.log("6. Excluir Sessão");
+      console.log("5. Cadastrar Sessão");
+      console.log("6. Listar Sessões");
+      console.log("7. Editar Sessão");
+      console.log("8. Excluir Sessão");
       console.log("---- Clientes ----");
-      console.log("7. Cadastrar Cliente");
-      console.log("8. Listar Clientes");
-      console.log("9. Excluir Cliente");
+      console.log("9. Cadastrar Cliente");
+      console.log("10. Listar Clientes");
+      console.log("11. Editar Cliente");
+      console.log("12. Excluir Cliente");
       console.log("---- Ingressos ----");
-      console.log("10. Comprar Ingresso");
-      console.log("11. Listar Ingressos");
+      console.log("13. Comprar Ingresso");
+      console.log("14. Listar Ingressos");
       console.log("=================================");
       console.log("0. Sair");
 
@@ -51,30 +62,39 @@ export class MenuCinema {
           console.log(this.filmeService.listarFilmes());
           break;
         case 3:
-          this.deletarFilme();
+          this.editarFilme();
           break;
         case 4:
-          this.criarSessao();
+          this.deletarFilme();
           break;
         case 5:
-          console.log(this.sessaoService.listarSessoes());
+          this.criarSessao();
           break;
         case 6:
-          this.deletarSessao();
+          console.log(this.sessaoService.listarSessoes());
           break;
         case 7:
-          this.criarCliente();
+          this.editarSessao();
           break;
         case 8:
-          console.log(this.clienteService.listarClientes());
+          this.deletarSessao();
           break;
         case 9:
-          this.deletarCliente();
+          this.criarCliente();
           break;
         case 10:
-          this.comprarIngresso();
+          console.log(this.clienteService.listarClientes());
           break;
         case 11:
+          this.editarCliente();
+          break;
+        case 12:
+          this.deletarCliente();
+          break;
+        case 13:
+          this.comprarIngresso();
+          break;
+        case 14:
           console.log(this.ingressoService.listarIngressos());
           break;
         case 0:
@@ -111,6 +131,32 @@ export class MenuCinema {
     console.log(this.filmeService.adicionarFilme(novoFilme));
   }
 
+  private editarFilme(): void {
+    console.log(this.filmeService.listarFilmes());
+    const id = +this.pergunta("ID do filme a editar: ");
+
+    console.log("(Enter para manter o valor atual)");
+    const titulo = this.pergunta("Novo título: ") || undefined;
+    const classInput = this.pergunta("Nova classificação: ");
+    const classificacao = classInput ? +classInput : undefined;
+    const duracaoInput = this.pergunta("Nova duração (min): ");
+    const duracaoMinutos = duracaoInput ? +duracaoInput : undefined;
+    const sinopse = this.pergunta("Nova sinopse: ") || undefined;
+    const ativoInput = this.pergunta("Ativo? (S/N ou Enter): ").toLowerCase();
+    const ativo =
+      ativoInput === "s" ? true : ativoInput === "n" ? false : undefined;
+
+    console.log(
+      this.filmeService.editarFilme(id, {
+        titulo,
+        classificacao,
+        duracaoMinutos,
+        sinopse,
+        ativo,
+      }),
+    );
+  }
+
   private deletarFilme(): void {
     console.log(this.filmeService.listarFilmes());
     const id = +this.pergunta("ID do filme a excluir: ");
@@ -134,6 +180,21 @@ export class MenuCinema {
 
     const novaSessao = new SessaoFilme(id, filme, horario, sala, totalAssentos);
     console.log(this.sessaoService.adicionarSessao(novaSessao));
+  }
+
+  private editarSessao(): void {
+    console.log(this.sessaoService.listarSessoes());
+    const id = +this.pergunta("ID da sessão a editar: ");
+
+    console.log("(Enter para manter o valor atual)");
+    const horario = this.pergunta("Novo horário (ex: 19:30): ") || undefined;
+    const sala = this.pergunta("Nova sala: ") || undefined;
+    const totalInput = this.pergunta("Novo total de assentos: ");
+    const totalAssentos = totalInput ? +totalInput : undefined;
+
+    console.log(
+      this.sessaoService.editarSessao(id, { horario, sala, totalAssentos }),
+    );
   }
 
   private deletarSessao(): void {
@@ -166,6 +227,51 @@ export class MenuCinema {
         this.pergunta("É estudante? (S/N): ").toLowerCase() === "s";
       console.log(this.clienteService.adicionarCliente(novoCliente));
     }
+  }
+
+  private editarCliente(): void {
+    console.log(this.clienteService.listarClientes());
+    const id = +this.pergunta("ID do cliente a editar: ");
+
+    console.log("(Enter para manter o valor atual)");
+    const nome = this.pergunta("Novo nome: ") || undefined;
+    const idadeInput = this.pergunta("Nova idade: ");
+    const idade = idadeInput ? +idadeInput : undefined;
+
+    const cliente = this.clienteService.buscarPorId(id);
+    if (!cliente) {
+      console.log("\nErro: Cliente não encontrado.\n");
+      return;
+    }
+
+    let extras: {
+      estudante?: boolean;
+      mensalidade?: boolean;
+      anual?: boolean;
+    } = {};
+
+    if (cliente instanceof ClienteVip) {
+      const mensInput = this.pergunta(
+        "Plano Mensal ativo? (S/N ou Enter): ",
+      ).toLowerCase();
+      const anualInput = this.pergunta(
+        "Plano Anual ativo? (S/N ou Enter): ",
+      ).toLowerCase();
+      extras.mensalidade =
+        mensInput === "s" ? true : mensInput === "n" ? false : undefined;
+      extras.anual =
+        anualInput === "s" ? true : anualInput === "n" ? false : undefined;
+    } else {
+      const estInput = this.pergunta(
+        "Estudante? (S/N ou Enter): ",
+      ).toLowerCase();
+      extras.estudante =
+        estInput === "s" ? true : estInput === "n" ? false : undefined;
+    }
+
+    console.log(
+      this.clienteService.editarCliente(id, { nome, idade, ...extras }),
+    );
   }
 
   private deletarCliente(): void {

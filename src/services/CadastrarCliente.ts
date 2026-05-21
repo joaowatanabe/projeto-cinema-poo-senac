@@ -4,6 +4,10 @@ import { ClienteVip } from "../entities/ClienteVip";
 export class Clientes {
   private clientes: (ClienteCinema | ClienteVip)[] = [];
 
+  constructor(clientesIniciais: ClienteCinema[] = []) {
+    this.clientes = clientesIniciais;
+  }
+
   public adicionarCliente(cliente: ClienteCinema | ClienteVip): string {
     this.clientes.push(cliente);
     const tag = cliente instanceof ClienteVip ? " [VIP]" : "";
@@ -34,6 +38,33 @@ export class Clientes {
       return `\nCliente "${removido[0].nome}" excluído do Sistema!\n`;
     }
     return `\nErro: Nenhum Cliente encontrado com este ID no Sistema.\n`;
+  }
+
+  public editarCliente(
+    id: number,
+    dados: {
+      nome?: string;
+      idade?: number;
+      estudante?: boolean;
+      mensalidade?: boolean;
+      anual?: boolean;
+    },
+  ): string {
+    const cliente = this.clientes.find((c) => c.id === id);
+    if (!cliente) return `\nErro: Cliente com ID ${id} não encontrado.\n`;
+
+    if (dados.nome !== undefined) cliente.nome = dados.nome;
+    if (dados.idade !== undefined) cliente.idade = dados.idade;
+
+    if (cliente instanceof ClienteVip) {
+      if (dados.mensalidade !== undefined)
+        cliente.mensalidade = dados.mensalidade;
+      if (dados.anual !== undefined) cliente.anual = dados.anual;
+    } else {
+      if (dados.estudante !== undefined) cliente.estudante = dados.estudante;
+    }
+
+    return `\nCliente "${cliente.nome}" atualizado com sucesso!\n`;
   }
 
   public buscarPorId(id: number): ClienteCinema | undefined {

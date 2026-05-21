@@ -1,7 +1,7 @@
 import { MenuCinema } from "./src/ui/MenuCinema";
-import { ClienteCinema } from "./src/entities/ClienteCinema";
 import { ClienteComum } from "./src/entities/ClienteComum";
 import { ClienteVip } from "./src/entities/ClienteVip";
+import { ClienteCinema } from "./src/entities/ClienteCinema";
 import { Filme } from "./src/entities/Filme";
 import { FilmeComum } from "./src/entities/FilmeComum";
 import { FilmeAdulto } from "./src/entities/FilmeAdulto";
@@ -29,18 +29,24 @@ const clientes: ClienteCinema[] = [
 console.log("\n====== RELATÓRIO DE CLIENTES ======");
 clientes.forEach((c) => console.log(c.descricao()));
 
-const filmes: Filme[] = [
-  new FilmeComum(1, "O Poderoso Chefão"),
-  new FilmeAdulto(2, "Clube da Luta"),
-  new FilmeComum(3, "Toy Story"),
-  new FilmeAdulto(4, "Pulp Fiction"),
-];
+const filmeComum1 = new FilmeComum(1, "O Poderoso Chefão");
+filmeComum1.classificacao = 14;
+filmeComum1.duracaoMinutos = 175;
 
-(filmes[0] as FilmeComum).classificacao = 14;
-(filmes[2] as FilmeComum).classificacao = 0;
+const filmeAdulto1 = new FilmeAdulto(2, "Clube da Luta");
+filmeAdulto1.duracaoMinutos = 139;
+
+const filmeComum2 = new FilmeComum(3, "Toy Story");
+filmeComum2.classificacao = 0;
+filmeComum2.duracaoMinutos = 81;
+
+const filmeAdulto2 = new FilmeAdulto(4, "Pulp Fiction");
+filmeAdulto2.duracaoMinutos = 154;
+
+const filmes: Filme[] = [filmeComum1, filmeAdulto1, filmeComum2, filmeAdulto2];
 
 console.log("\n====== RELATÓRIO DE FILMES ======");
 filmes.forEach((f) => console.log(f.descricao()));
 
-const menu = new MenuCinema();
+const menu = new MenuCinema(clientes, filmes);
 menu.iniciar();

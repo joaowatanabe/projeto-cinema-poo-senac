@@ -1,10 +1,14 @@
 import { Filme } from "../entities/Filme";
 import { FilmeAdulto } from "../entities/FilmeAdulto";
+import { FilmeComum } from "../entities/FilmeComum";
 
 export class CadastrarFilmeService {
   private filmes: Filme[] = [];
 
-  // Sem dependência no construtor — limpo e testável
+  constructor(filmesIniciais: Filme[] = []) {
+    this.filmes = filmesIniciais;
+  }
+
   public adicionarFilme(filme: Filme): string {
     this.filmes.push(filme);
     const tag = filme instanceof FilmeAdulto ? " [+18]" : "";
@@ -31,6 +35,34 @@ export class CadastrarFilmeService {
       return `\nFilme "${removido[0].titulo}" excluído com sucesso!\n`;
     }
     return `\nErro: Nenhum filme encontrado com este ID.\n`;
+  }
+
+  public editarFilme(
+    id: number,
+    dados: {
+      titulo?: string;
+      classificacao?: number;
+      duracaoMinutos?: number;
+      sinopse?: string;
+      ativo?: boolean;
+    },
+  ): string {
+    const filme = this.filmes.find((f) => f.id === id);
+    if (!filme) return `\nErro: Filme com ID ${id} não encontrado.\n`;
+
+    try {
+      if (dados.titulo !== undefined) filme.titulo = dados.titulo;
+      if (dados.classificacao !== undefined)
+        filme.classificacao = dados.classificacao;
+      if (dados.duracaoMinutos !== undefined)
+        filme.duracaoMinutos = dados.duracaoMinutos;
+      if (dados.sinopse !== undefined) filme.sinopse = dados.sinopse;
+      if (dados.ativo !== undefined) filme.ativo = dados.ativo;
+      return `\nFilme "${filme.titulo}" atualizado com sucesso!\n`;
+    } catch (erro) {
+      if (erro instanceof Error) return `\nErro: ${erro.message}\n`;
+      return `\nErro inesperado ao editar filme.\n`;
+    }
   }
 
   public buscarPorId(id: number): Filme | undefined {

@@ -25,6 +25,25 @@ export class SessaoFilmeService {
     return this.sessoes.find((s) => s.id === id);
   }
 
+  public editarSessao(
+    id: number,
+    dados: { horario?: string; sala?: string; totalAssentos?: number },
+  ): string {
+    const sessao = this.sessoes.find((s) => s.id === id);
+    if (!sessao) return `\nErro: Sessão com ID ${id} não encontrada.\n`;
+
+    if (dados.horario !== undefined) sessao.horario = dados.horario;
+    if (dados.sala !== undefined) sessao.sala = dados.sala;
+    if (dados.totalAssentos !== undefined) {
+      if (dados.totalAssentos < sessao.assentosOcupados.length) {
+        return `\nErro: Total de assentos não pode ser menor que os já ocupados (${sessao.assentosOcupados.length}).\n`;
+      }
+      sessao.totalAssentos = dados.totalAssentos;
+    }
+
+    return `\nSessão [${sessao.id}] ${sessao.filme.titulo} - ${sessao.horario} atualizada com sucesso!\n`;
+  }
+
   public excluirSessao(id: number): string {
     const index = this.sessoes.findIndex((s) => s.id === id);
 

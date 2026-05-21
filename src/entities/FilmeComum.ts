@@ -6,6 +6,6 @@ export class FilmeComum extends Filme {
   }
 
   public descricao(): string {
-    return `🎬 [${this._id}] ${this._titulo} | ${this._classificacao}+ | ${this._duracaoMinutos}min`;
+    return `[${this._id}] ${this._titulo} | ${this._classificacao}+ | ${this._duracaoMinutos}min`;
   }
 }
