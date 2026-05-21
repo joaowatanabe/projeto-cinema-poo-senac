@@ -5,14 +5,17 @@ export class FilmeAdulto extends Filme {
 
   constructor(id: number, titulo: string) {
     super(id, titulo);
-    this._classificacao = 18; 
+    this._classificacao = 18;
     this._conteudoAdulto = true;
+  }
+
+  public descricao(): string {
+    return `[${this._id}] ${this._titulo} | +18 | ${this._duracaoMinutos}min`;
   }
 
   public get conteudoAdulto(): boolean {
     return this._conteudoAdulto;
   }
-
   public set conteudoAdulto(valor: boolean) {
     this._conteudoAdulto = valor;
   }
