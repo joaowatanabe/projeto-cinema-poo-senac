@@ -16,40 +16,53 @@ export class CadastrarIngresso {
     sessao: SessaoFilme,
     assento: number,
   ): Ingresso | string {
-    if (cliente.idade < sessao.filme.classificacao) {
-      const isAdulto = sessao.filme instanceof FilmeAdulto;
-      const motivo = isAdulto
-        ? `Este filme é classificado como +18 e não é permitido para menores.`
-        : `Classificação mínima: ${sessao.filme.classificacao} anos.`;
-      return `\nErro: ${motivo} Cliente tem ${cliente.idade} anos.\n`;
+    try {
+      if (id <= 0) throw new Error("ID do ingresso inválido.");
+
+      if (!Number.isInteger(assento) || assento <= 0) {
+        throw new Error(`Número de assento inválido: ${assento}.`);
+      }
+
+      if (cliente.idade < sessao.filme.classificacao) {
+        const isAdulto = sessao.filme instanceof FilmeAdulto;
+        const motivo = isAdulto
+          ? `Este filme é classificado como +18 e não é permitido para menores.`
+          : `Classificação mínima: ${sessao.filme.classificacao} anos.`;
+        throw new Error(`${motivo} Cliente tem ${cliente.idade} anos.`);
+      }
+
+      if (!sessao.assentoDisponivel(assento)) {
+        throw new Error(`Assento ${assento} não está disponível.`);
+      }
+
+      let meiaEntrada = false;
+      let valorPago = PRECO_CHEIO;
+
+      if (cliente instanceof ClienteVip && cliente.planoAtivo) {
+        valorPago = 0;
+      } else if (cliente.estudante) {
+        meiaEntrada = true;
+        valorPago = PRECO_MEIA;
+      }
+
+      sessao.ocuparAssento(assento);
+
+      const ingresso = new Ingresso(
+        id,
+        cliente,
+        sessao,
+        assento,
+        meiaEntrada,
+        valorPago,
+      );
+      this.ingressos.push(ingresso);
+      return ingresso;
+    } catch (erro) {
+      if (erro instanceof Error) {
+        return `\nErro: ${erro.message}\n`;
+      }
+      return `\nErro inesperado ao emitir ingresso.\n`;
     }
-
-    if (!sessao.assentoDisponivel(assento)) {
-      return `\nErro: Assento ${assento} não está disponível.\n`;
-    }
-
-    let meiaEntrada = false;
-    let valorPago = PRECO_CHEIO;
-
-    if (cliente instanceof ClienteVip && cliente.planoAtivo) {
-      valorPago = 0; // Cortesia VIP — plano já foi pago
-    } else if (cliente.estudante) {
-      meiaEntrada = true;
-      valorPago = PRECO_MEIA;
-    }
-
-    sessao.ocuparAssento(assento);
-
-    const ingresso = new Ingresso(
-      id,
-      cliente,
-      sessao,
-      assento,
-      meiaEntrada,
-      valorPago,
-    );
-    this.ingressos.push(ingresso);
-    return ingresso;
   }
 
   public listarIngressos(): string {

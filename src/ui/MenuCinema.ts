@@ -10,6 +10,8 @@ import { CadastrarIngresso } from "../services/CadastrarIngresso";
 import { SalaCinema } from "./SalaCinema";
 import { FilmeAdulto } from "../entities/FilmeAdulto";
 import { ClienteVip } from "../entities/ClienteVip";
+import { ClienteComum } from "../entities/ClienteComum";
+import { FilmeComum } from "../entities/FilmeComum";
 
 export class MenuCinema {
   private pergunta = prompt();
@@ -97,11 +99,8 @@ export class MenuCinema {
     let novoFilme: Filme;
     if (classificacao >= 18) {
       novoFilme = new FilmeAdulto(id, titulo);
-      console.log(
-        "\n⚠ Filme classificado como +18. Menores serão impedidos na compra.\n",
-      );
     } else {
-      novoFilme = new Filme(id, titulo);
+      novoFilme = new FilmeComum(id, titulo); // ← era new Filme
       novoFilme.classificacao = classificacao;
     }
 
@@ -152,24 +151,19 @@ export class MenuCinema {
 
     if (isVip) {
       const mensalidade =
-        this.pergunta("Possui plano Mensal ativo? (S/N): ").toLowerCase() ===
-        "s";
+        this.pergunta("Plano Mensal ativo? (S/N): ").toLowerCase() === "s";
       const anual =
-        this.pergunta("Possui plano Anual ativo? (S/N): ").toLowerCase() ===
-        "s";
-
+        this.pergunta("Plano Anual ativo? (S/N): ").toLowerCase() === "s";
       const novoVip = new ClienteVip(id, cpf, mensalidade, anual);
       novoVip.nome = nome;
       novoVip.idade = idade;
-
       console.log(this.clienteService.adicionarCliente(novoVip));
     } else {
-      const novoCliente = new ClienteCinema(id, cpf);
+      const novoCliente = new ClienteComum(id, cpf); // ← era ClienteCinema
       novoCliente.nome = nome;
       novoCliente.idade = idade;
       novoCliente.estudante =
         this.pergunta("É estudante? (S/N): ").toLowerCase() === "s";
-
       console.log(this.clienteService.adicionarCliente(novoCliente));
     }
   }
