@@ -1,23 +1,41 @@
+import { ICrud } from "../interfaces/ICrud";
+import { IEditavel } from "../interfaces/IEditavel";
 import { ClienteCinema } from "../entities/ClienteCinema";
+import { ClienteComum } from "../entities/ClienteComum";
 import { ClienteVip } from "../entities/ClienteVip";
 
-export class Clientes {
-  private clientes: (ClienteCinema | ClienteVip)[] = [];
+type DadosEdicaoCliente = {
+  nome?: string;
+  idade?: number;
+  estudante?: boolean;
+  mensalidade?: boolean;
+  anual?: boolean;
+  tornarVip?: boolean;
+  tornarComum?: boolean;
+};
+
+export class Clientes
+  implements ICrud<ClienteCinema>, IEditavel<DadosEdicaoCliente>
+{
+  private clientes: ClienteCinema[] = [];
 
   constructor(clientesIniciais: ClienteCinema[] = []) {
     this.clientes = clientesIniciais;
   }
 
-  public adicionarCliente(cliente: ClienteCinema | ClienteVip): string {
+  public adicionar(cliente: ClienteCinema): string {
     this.clientes.push(cliente);
     const tag = cliente instanceof ClienteVip ? " [VIP]" : "";
     return `\nCliente "${cliente.nome}"${tag} adicionado com sucesso ao Sistema\n`;
   }
 
-  public listarClientes(): string {
-    if (this.clientes.length === 0) {
+  public adicionarCliente(cliente: ClienteCinema): string {
+    return this.adicionar(cliente);
+  }
+
+  public listar(): string {
+    if (this.clientes.length === 0)
       return `\nNenhum Cliente cadastrado no Sistema!\n`;
-    }
 
     let resultado = "\n--- Catálogo de Clientes ---\n";
     this.clientes.forEach((c) => {
@@ -31,7 +49,11 @@ export class Clientes {
     return resultado;
   }
 
-  public excluirCliente(id: number): string {
+  public listarClientes(): string {
+    return this.listar();
+  }
+
+  public excluir(id: number): string {
     const index = this.clientes.findIndex((c) => c.id === id);
     if (index !== -1) {
       const removido = this.clientes.splice(index, 1);
@@ -40,18 +62,42 @@ export class Clientes {
     return `\nErro: Nenhum Cliente encontrado com este ID no Sistema.\n`;
   }
 
-  public editarCliente(
-    id: number,
-    dados: {
-      nome?: string;
-      idade?: number;
-      estudante?: boolean;
-      mensalidade?: boolean;
-      anual?: boolean;
-    },
-  ): string {
-    const cliente = this.clientes.find((c) => c.id === id);
-    if (!cliente) return `\nErro: Cliente com ID ${id} não encontrado.\n`;
+  public excluirCliente(id: number): string {
+    return this.excluir(id);
+  }
+
+  public buscarPorId(id: number): ClienteCinema | undefined {
+    return this.clientes.find((c) => c.id === id);
+  }
+
+  public editar(id: number, dados: DadosEdicaoCliente): string {
+    const index = this.clientes.findIndex((c) => c.id === id);
+    if (index === -1) return `\nErro: Cliente com ID ${id} não encontrado.\n`;
+
+    let cliente = this.clientes[index];
+
+    if (dados.tornarVip && !(cliente instanceof ClienteVip)) {
+      const novoVip = new ClienteVip(
+        cliente.id,
+        cliente.cpf,
+        dados.mensalidade ?? false,
+        dados.anual ?? false,
+      );
+      novoVip.nome = cliente.nome;
+      novoVip.idade = cliente.idade;
+      novoVip.estudante = cliente.estudante;
+      this.clientes[index] = novoVip;
+      return `\nCliente "${novoVip.nome}" promovido a VIP com sucesso! 👑\n`;
+    }
+
+    if (dados.tornarComum && cliente instanceof ClienteVip) {
+      const novoComum = new ClienteComum(cliente.id, cliente.cpf);
+      novoComum.nome = cliente.nome;
+      novoComum.idade = cliente.idade;
+      novoComum.estudante = dados.estudante ?? false;
+      this.clientes[index] = novoComum;
+      return `\nCliente "${novoComum.nome}" convertido para cliente comum.\n`;
+    }
 
     if (dados.nome !== undefined) cliente.nome = dados.nome;
     if (dados.idade !== undefined) cliente.idade = dados.idade;
@@ -67,7 +113,7 @@ export class Clientes {
     return `\nCliente "${cliente.nome}" atualizado com sucesso!\n`;
   }
 
-  public buscarPorId(id: number): ClienteCinema | undefined {
-    return this.clientes.find((c) => c.id === id);
+  public editarCliente(id: number, dados: DadosEdicaoCliente): string {
+    return this.editar(id, dados);
   }
 }

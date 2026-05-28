@@ -1,6 +1,8 @@
 import { SessaoFilme } from "./SessaoFilme";
+import { IDescritivel } from "../interfaces/IDescritivel";
 
-export abstract class Filme {
+
+export abstract class Filme implements IDescritivel{
   protected _id: number;
   protected _titulo: string;
   protected _classificacao: number;

@@ -1,4 +1,6 @@
-export abstract class ClienteCinema {
+import { IDescritivel } from "../interfaces/IDescritivel";
+
+export abstract class ClienteCinema implements IDescritivel {
   protected _id: number;
   protected _nome: string;
   protected _cpf: string;

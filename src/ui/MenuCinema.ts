@@ -220,7 +220,7 @@ export class MenuCinema {
       novoVip.idade = idade;
       console.log(this.clienteService.adicionarCliente(novoVip));
     } else {
-      const novoCliente = new ClienteComum(id, cpf); // ← era ClienteCinema
+      const novoCliente = new ClienteComum(id, cpf);
       novoCliente.nome = nome;
       novoCliente.idade = idade;
       novoCliente.estudante =
@@ -233,16 +233,51 @@ export class MenuCinema {
     console.log(this.clienteService.listarClientes());
     const id = +this.pergunta("ID do cliente a editar: ");
 
-    console.log("(Enter para manter o valor atual)");
-    const nome = this.pergunta("Novo nome: ") || undefined;
-    const idadeInput = this.pergunta("Nova idade: ");
-    const idade = idadeInput ? +idadeInput : undefined;
-
     const cliente = this.clienteService.buscarPorId(id);
     if (!cliente) {
       console.log("\nErro: Cliente não encontrado.\n");
       return;
     }
+
+    // Pergunta se quer mudar o tipo
+    if (cliente instanceof ClienteVip) {
+      const tornar = this.pergunta(
+        "Converter para cliente Comum? (S/N): ",
+      ).toLowerCase();
+      if (tornar === "s") {
+        const estInput = this.pergunta("É estudante? (S/N): ").toLowerCase();
+        const estudante = estInput === "s";
+        console.log(
+          this.clienteService.editarCliente(id, {
+            tornarComum: true,
+            estudante,
+          }),
+        );
+        return;
+      }
+    } else {
+      const tornar = this.pergunta("Promover para VIP? (S/N): ").toLowerCase();
+      if (tornar === "s") {
+        const mensalidade =
+          this.pergunta("Plano Mensal ativo? (S/N): ").toLowerCase() === "s";
+        const anual =
+          this.pergunta("Plano Anual ativo? (S/N): ").toLowerCase() === "s";
+        console.log(
+          this.clienteService.editarCliente(id, {
+            tornarVip: true,
+            mensalidade,
+            anual,
+          }),
+        );
+        return;
+      }
+    }
+
+    // Edição de dados simples
+    console.log("(Enter para manter o valor atual)");
+    const nome = this.pergunta("Novo nome: ") || undefined;
+    const idadeInput = this.pergunta("Nova idade: ");
+    const idade = idadeInput ? +idadeInput : undefined;
 
     let extras: {
       estudante?: boolean;
