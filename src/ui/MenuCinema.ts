@@ -120,7 +120,7 @@ export class MenuCinema {
     if (classificacao >= 18) {
       novoFilme = new FilmeAdulto(id, titulo);
     } else {
-      novoFilme = new FilmeComum(id, titulo); // ← era new Filme
+      novoFilme = new FilmeComum(id, titulo);
       novoFilme.classificacao = classificacao;
     }
 
@@ -239,7 +239,6 @@ export class MenuCinema {
       return;
     }
 
-    // Pergunta se quer mudar o tipo
     if (cliente instanceof ClienteVip) {
       const tornar = this.pergunta(
         "Converter para cliente Comum? (S/N): ",
@@ -273,7 +272,6 @@ export class MenuCinema {
       }
     }
 
-    // Edição de dados simples
     console.log("(Enter para manter o valor atual)");
     const nome = this.pergunta("Novo nome: ") || undefined;
     const idadeInput = this.pergunta("Nova idade: ");
