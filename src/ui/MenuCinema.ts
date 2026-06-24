@@ -2,7 +2,6 @@ import prompt from "prompt-sync";
 import { ClienteCinema } from "../entities/ClienteCinema";
 import { Filme } from "../entities/Filme";
 import { SessaoFilme } from "../entities/SessaoFilme";
-import { Ingresso } from "../entities/Ingresso";
 import { Clientes } from "../services/CadastrarCliente";
 import { CadastrarFilmeService } from "../services/CadastrarFilmeService";
 import { SessaoFilmeService } from "../services/SessaoFilmeService";
@@ -187,6 +186,7 @@ export class MenuCinema {
     const id = +this.pergunta("ID da sessão a editar: ");
 
     console.log("(Enter para manter o valor atual)");
+    
     const horario = this.pergunta("Novo horário (ex: 19:30): ") || undefined;
     const sala = this.pergunta("Nova sala: ") || undefined;
     const totalInput = this.pergunta("Novo total de assentos: ");
